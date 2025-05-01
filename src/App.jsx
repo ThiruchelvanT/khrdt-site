@@ -8,6 +8,7 @@ import DistrictPage from './DistrictPage';
 import { motion } from 'framer-motion';
 import { departmentsData } from './DepartmentsData';
 import DepartmentPage from './DepartmentPage';
+import ContactPage from './ContactPage'; 
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSw5nmsMCASycB4LXk0DoAZ_VoGDNcDvujSTgu0mfyxVtg1XGuILjZFuP4ihXOblHynK2_uwJu3xIow/pub?gid=0&single=true&output=csv';
 
@@ -82,38 +83,51 @@ export default function App() {
 
         {/* Header */}
         <header className="flex justify-between items-center p-6 shadow-md">
-          <div className="flex items-center space-x-3">
-            <img src="/logo.png" alt="Logo" className="h-10 w-10" />
-            <span className="text-xl font-bold">{texts[language].teamName}</span>
-          </div>
-          <div className="flex items-center space-x-4 relative">
-            <button onClick={toggleLang} className="hidden md:block px-3 py-2 rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
-              🌐 {language === 'en' ? 'English' : 'தமிழ்'}
-            </button>
-            <button className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700" onClick={() => setMenuOpen(!menuOpen)}>
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-            {menuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
-                <div className="flex flex-col p-4 space-y-2">
-                  <button onClick={toggleLang} className="md:hidden text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
-                    🌐 {language === 'en' ? 'English' : 'தமிழ்'}
-                  </button>
-                  <button onClick={toggleDarkMode} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
-                    {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
-                  </button>
-                  <hr className="my-1 border-gray-300 dark:border-gray-600" />
-                  <Link to="/login">
-                    <button className="text-left text-blue-600 hover:underline px-3 py-2">{texts[language].login}</button>
-                  </Link>
-                  <Link to="/signup">
-                    <button className="text-left bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">{texts[language].signup}</button>
-                  </Link>
-                </div>
-              </div>
-            )}
-          </div>
-        </header>
+  <div className="flex items-center space-x-3">
+    <img src="/logo.png" alt="Logo" className="h-10 w-10" />
+    <span className="text-xl font-bold">{texts[language].teamName}</span>
+  </div>
+
+  {/* Desktop Navigation Links */}
+  <div className="hidden md:flex items-center space-x-6">
+    <Link to="/" className="transition-transform duration-200 hover:scale-110">Home</Link>
+    <Link to="/news" className="transition-transform duration-200 hover:scale-110">News</Link>
+    <Link to="/contact" className="transition-transform duration-200 hover:scale-110">Contact</Link>
+    <button onClick={toggleLang} className="px-3 py-2 rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
+      🌐 {language === 'en' ? 'English' : 'தமிழ்'}
+    </button>
+  </div>
+
+  {/* Mobile Hamburger */}
+  <div className="flex md:hidden items-center space-x-4 relative">
+    <button className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700" onClick={() => setMenuOpen(!menuOpen)}>
+      {menuOpen ? <X size={24} /> : <Menu size={24} />}
+    </button>
+    {menuOpen && (
+      <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
+        <div className="flex flex-col p-4 space-y-2">
+          <Link to="/" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">🏠 Home</Link>
+          <Link to="/news" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">📰 News</Link>
+          <Link to="/contact" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">Contact</Link>
+          <button onClick={toggleLang} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+            🌐 {language === 'en' ? 'English' : 'தமிழ்'}
+          </button>
+          <button onClick={toggleDarkMode} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+          <hr className="my-1 border-gray-300 dark:border-gray-600" />
+          <Link to="/login">
+            <button className="text-left text-blue-600 hover:underline px-3 py-2">{texts[language].login}</button>
+          </Link>
+          <Link to="/signup">
+            <button className="text-left bg-blue-600 text-white px-3 py-2 rounded hover:bg-blue-700">{texts[language].signup}</button>
+          </Link>
+        </div>
+      </div>
+    )}
+  </div>
+</header>
+
 
         <Routes>
           {/* Homepage */}
@@ -137,23 +151,23 @@ export default function App() {
 
               {/* Departments */}
               <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 p-6 max-w-6xl mx-auto">
-  {Object.keys(departmentsData).map((key, i) => (
-    <Link key={i} to={`/department/${encodeURIComponent(key)}`}>
-      <motion.div
-        className="flex flex-col items-center justify-center border rounded-xl p-6 shadow hover:shadow-lg transition cursor-pointer"
-        initial={{ y: 50, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: i * 0.1, duration: 0.6 }}
-      >
-        <div className="text-4xl mb-3">📜</div>
-        <div className="text-lg font-medium text-center">
-          {departmentsData[key][language].title}
-        </div>
-      </motion.div>
-    </Link>
-  ))}
-</section>
+                {Object.keys(departmentsData).map((key, i) => (
+                  <Link key={i} to={`/department/${encodeURIComponent(key)}`}>
+                    <motion.div
+                      className="flex flex-col items-center justify-center border rounded-xl p-6 shadow hover:shadow-lg transition cursor-pointer"
+                      initial={{ y: 50, opacity: 0 }}
+                      whileInView={{ y: 0, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ delay: i * 0.1, duration: 0.6 }}
+                    >
+                      <div className="text-4xl mb-3">📜</div>
+                      <div className="text-lg font-medium text-center">
+                        {departmentsData[key][language].title}
+                      </div>
+                    </motion.div>
+                  </Link>
+                ))}
+              </section>
 
 
 
@@ -188,6 +202,9 @@ export default function App() {
             path="/department/:name"
             element={<DepartmentPage key={language} language={language} />}
           />
+          <Route path="/news" element={<div className="p-10 text-xl text-center">News Page Coming Soon</div>} />
+          {/* <Route path="/contact" element={<div className="p-10 text-xl text-center">Contact Page Coming Soon</div>} /> */}
+          <Route path="/contact" element={<ContactPage />} />
 
         </Routes>
       </div>

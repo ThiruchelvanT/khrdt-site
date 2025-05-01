@@ -5,4 +5,9 @@ export default {
     extend: {},
   },
   plugins: [],
+  build: {
+    sourcemap: false
+  },
 };
+
+
