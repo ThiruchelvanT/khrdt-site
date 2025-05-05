@@ -6,7 +6,7 @@ export default {
   },
   plugins: [],
   build: {
-    minify: 'terser',
+    minify: false,
     cssCodeSplit: true,
     rollupOptions: {
       output: {
