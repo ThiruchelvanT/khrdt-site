@@ -8,10 +8,10 @@ import {
   deleteItem
 } from '../controllers/itemController.js';
 // import Item from '../models/Item';
-import Item from '/Users/thiruchelvansibi/Desktop/history-website/backend/models/Item.js';
+// import Item from '/Users/thiruchelvansibi/Desktop/history-website/backend/models/Item.js';
 
 import express from 'express';
-import { getAllItems } from '../controllers/itemController.js';
+// import { getAllItems } from '../controllers/itemController.js';
 
 const router = express.Router();
 // router.get('/', getAllItems);
