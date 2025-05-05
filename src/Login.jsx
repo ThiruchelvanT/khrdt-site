@@ -1,74 +1,118 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-export default function Login({ language = 'en' }) {
+export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const texts = {
-    en: {
-      title: 'Login',
-      email: 'Email address',
-      password: 'Password',
-      login: 'Login',
-      noAccount: "Don't have an account?",
-      signup: 'Sign Up',
-    },
-    ta: {
-      title: 'உள்நுழைவு',
-      email: 'மின்னஞ்சல் முகவரி',
-      password: 'கடவுச்சொல்',
-      login: 'உள்நுழை',
-      noAccount: 'கணக்கு இல்லையா?',
-      signup: 'பதிவு செய்யவும்',
-    },
-  };
-
-  const t = texts[language];
-
-  const handleLogin = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // You can add validation or API call here
-    alert(`Email: ${email}, Password: ${password}`);
+  
+    if (!email || !password) {
+      setError('Please enter both email and password.');
+      return;
+    }
+  
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Invalid credentials');
+      }
+  
+      const data = await response.json();
+  
+      // ✅ Save token to localStorage
+      localStorage.setItem('token', data.token);
+  
+      // ✅ Optional: Fetch protected resource right after login
+      const token = data.token;
+      const protectedRes = await fetch('/api/protected', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+  
+      const protectedData = await protectedRes.json();
+      console.log(protectedData);
+  
+    } catch (err) {
+      setError(err.message || 'Login failed');
+    }
   };
+  
+  
+
+  
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 px-4">
-      <div className="bg-white dark:bg-gray-800 shadow-xl rounded-xl p-8 w-full max-w-md">
-        <h2 className="text-2xl font-semibold text-center mb-6 dark:text-white">{t.title}</h2>
-        <form onSubmit={handleLogin} className="space-y-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900">
+      <motion.div
+        className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-xl w-full max-w-md"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex flex-col items-center mb-6">
+          <img
+            src="/logo.png" // <-- Replace with your actual logo path
+            alt="Logo"
+            className="h-16 w-16 mb-2"
+          />
+          <h2 className="text-2xl font-bold text-center text-gray-800 dark:text-white">
+            Login to Your Account
+          </h2>
+        </div>
+
+
+        {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm mb-1 dark:text-gray-300">{t.email}</label>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Email
+            </label>
             <input
               type="email"
-              required
+              className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder="you@example.com"
             />
           </div>
+
           <div>
-            <label className="block text-sm mb-1 dark:text-gray-300">{t.password}</label>
+            <label className="block text-gray-700 dark:text-gray-300 mb-1">
+              Password
+            </label>
             <input
               type="password"
-              required
+              className="w-full px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-white"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder="••••••••"
             />
           </div>
+
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            className="w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700 transition"
           >
-            {t.login}
+            Login
           </button>
         </form>
-        <p className="mt-4 text-sm text-center dark:text-gray-300">
-          {t.noAccount}{' '}
-          <Link to="/signup" className="text-blue-600 hover:underline">{t.signup}</Link>
+
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-4 text-center">
+          Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up</a>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 }

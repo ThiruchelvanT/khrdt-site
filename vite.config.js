@@ -6,8 +6,17 @@ export default {
   },
   plugins: [],
   build: {
+    minify: 'terser',
+    cssCodeSplit: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom'],
+          vendor: ['axios', 'react-router-dom'],
+        }
+      }
+    },
     sourcemap: false
   },
 };
-
 
