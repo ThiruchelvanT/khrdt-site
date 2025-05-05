@@ -79,7 +79,7 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    axios.get('http://www.khrdt.in/api/items', {
+    axios.get('https://www.khrdt.in/api/items', {
       timeout: 10000,
       headers: {
         'Content-Type': 'application/json'
