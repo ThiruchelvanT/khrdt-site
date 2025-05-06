@@ -10,6 +10,7 @@ import DepartmentPage from './DepartmentPage';
 import ContactPage from './ContactPage';
 import Login from './Login';
 import DistrictPage from './DistrictPage';
+import DiscoveriesPage from './DiscoveriesPage';
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSw5nmsMCASycB4LXk0DoAZ_VoGDNcDvujSTgu0mfyxVtg1XGuILjZFuP4ihXOblHynK2_uwJu3xIow/pub?gid=0&single=true&output=csv';
 
@@ -50,6 +51,10 @@ export default function App() {
       signup: 'Sign Up',
       darkMode: '🌙 Dark Mode',
       lightMode: '☀️ Light Mode',
+      home: 'Home',
+      news: 'News',
+      discoveries: 'Discoveries',
+      contact: 'Contact',
     },
     ta: {
       teamName: 'கிருஷ்ணகிரி வரலாற்று ஆய்வு மற்றும் ஆவணப்படுத்தும் குழு',
@@ -62,6 +67,10 @@ export default function App() {
       signup: 'பதிவு செய்யவும்',
       darkMode: '🌙 இருண்ட போக்கு',
       lightMode: '☀️ வெளிச்ச போக்கு',
+      home: 'முகப்பு',
+      news: 'செய்திகள்',
+      discoveries: 'கண்டுபிடிப்புகள்',
+      contact: 'தொடர்பு',
     },
   };
 
@@ -112,15 +121,24 @@ export default function App() {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/" className="transition-transform duration-200 hover:scale-110">Home</Link>
-            <Link to="/news" className="transition-transform duration-200 hover:scale-110">News</Link>
-            <Link to="/contact" className="transition-transform duration-200 hover:scale-110">Contact</Link>
+            <Link to="/" className="transition-transform duration-200 hover:scale-110">
+              {texts[language].home}
+            </Link>
+            <Link to="/news" className="transition-transform duration-200 hover:scale-110">
+              {texts[language].news}
+            </Link>
+            <Link to="/discoveries" className="transition-transform duration-200 hover:scale-110">
+              {texts[language].discoveries}
+            </Link>
+            <Link to="/contact" className="transition-transform duration-200 hover:scale-110">
+              {texts[language].contact}
+            </Link>
             <button onClick={toggleLang} className="px-3 py-2 rounded text-sm hover:bg-gray-100 dark:hover:bg-gray-700">
               🌐 {language === 'en' ? 'English' : 'தமிழ்'}
             </button>
           </div>
 
-          {/* Mobile Hamburger */}
+          {/* Mobile Hamburger */} 
           <div className="flex md:hidden items-center space-x-4 relative">
             <button className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700" onClick={() => setMenuOpen(!menuOpen)}>
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -128,9 +146,18 @@ export default function App() {
             {menuOpen && (
               <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
                 <div className="flex flex-col p-4 space-y-2">
-                  <Link to="/" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">🏠 Home</Link>
-                  <Link to="/news" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">📰 News</Link>
-                  <Link to="/contact" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">Contact</Link>
+                <Link to="/" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  🏠 {texts[language].home}
+                </Link>
+                <Link to="/news" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  📰 {texts[language].news}
+                </Link>
+                <Link to="/discoveries" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  🔍 {texts[language].discoveries}
+                </Link>
+                <Link to="/contact" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  📞 {texts[language].contact}
+                </Link>
                   <button onClick={toggleLang} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
                     🌐 {language === 'en' ? 'English' : 'தமிழ்'}
                   </button>
@@ -225,6 +252,7 @@ export default function App() {
           <Route path="/department/:name" element={<DepartmentPage key={language} language={language} />} />
           <Route path="/news" element={<div className="p-10 text-xl text-center">News Page Coming Soon</div>} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/discoveries" element={<DiscoveriesPage language={language} />} />
         </Routes>
       </div>
     </div>
