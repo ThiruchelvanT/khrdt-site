@@ -61,7 +61,7 @@ const DiscoveriesPage = ({ language }) => {
     ta: {
       taluk: 'தாலுகா',
       village: 'கிராமம்',
-      findings: 'கண்டுபிடிப்புகள்',
+      findings: 'ஆவணப்படுத்தியது / கண்டுபிடிப்பு',
       description: 'விளக்கம்',
       location: 'இடம்',
       youtube: 'யூடியூப்',
@@ -246,9 +246,9 @@ const DiscoveriesPage = ({ language }) => {
               <th className="py-3 px-4 text-left">{columnHeaders[language].village}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].findings}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].description}</th>
-              <th className="py-3 px-4 text-left">{columnHeaders[language].location}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].youtube}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].blogspot}</th>
+              <th className="py-3 px-4 text-left">{columnHeaders[language].location}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
