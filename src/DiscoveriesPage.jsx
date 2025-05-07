@@ -51,7 +51,7 @@ const DiscoveriesPage = ({ language }) => {
     en: {
       taluk: 'Taluk',
       village: 'Village',
-      findings: 'Findings',
+      findings: 'Documented / Findings',
       description: 'Description',
       location: 'Location',
       youtube: 'YouTube',
