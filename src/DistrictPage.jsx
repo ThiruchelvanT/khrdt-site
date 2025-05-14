@@ -199,7 +199,7 @@ description: "Tamil Nadu's largest rock carving & rock painting",
 },
 'ganganapalli-1': {
   en: {
-    title: 'Ganganapalli',
+    title: 'Konnganapalli',
     description: "Tamil Nadu's largest black sandalwood painting collection - Konkanapalli Veppanapalli Union",
     link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/04/blog-post_99.html',
   },
@@ -211,7 +211,7 @@ description: "Tamil Nadu's largest rock carving & rock painting",
 },
 'ganganapalli-2': {
   en: {
-    title: 'Ganganapalli',
+    title: 'Konnganapalli',
     description: 'Thumbu inscription of Chola king Rajathirajan, 1050 AD',
     link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/04/1050.html',
   },
@@ -267,6 +267,30 @@ description: "Tamil Nadu's largest rock carving & rock painting",
     title: 'சாமந்தமலை ',
     description: 'குத்துககல் ',
     link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/04/blog-post_14.html',
+  }
+},
+'kathujuganapalli': {
+  en: {
+    title: 'Kathujuganapalli',
+    description: 'stone',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_38.html',
+  },
+  ta: {
+    title: 'ஜோடிப்பாறை',
+    description: 'காட்சிப்பொருள்',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_38.html',
+  }
+},
+'nedusalai': {
+  en: {
+    title: 'Nedusalai',
+    description: 'temple',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_14.html',
+  },
+  ta: {
+    title: 'நெடுசாலை ',
+    description: 'பிற்கால சோழர்கால சிவன்கோவில் ',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_14.html',
   }
 },
   // Add more places here
