@@ -25,7 +25,7 @@
     "tailwindcss": "^4.1.7"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "./start.sh",
     "dev": "nodemon --delay 2500ms --watch ./ server.js",
     "test": "jest"
   }

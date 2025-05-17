@@ -10,7 +10,9 @@ import News from './models/News.js';
 dotenv.config();
 
 const app = express();
-const PORT = 5050;
+const PORT = process.env.PORT || 5050
+
+
 const JWT_SECRET = process.env.JWT_SECRET || 'Sibi1970';
 
 const corsOptions = {
@@ -23,9 +25,11 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI || 'mongodb+srv://KHRDT_Admin:Thamil_KHRDT4301@khrdt-cluster.yza2mrk.mongodb.net/?retryWrites=true&w=majority&appName=KHRDT-cluster')
-  .then(() => console.log('Connected to MongoDB'))
-  .catch(err => console.error('Could not connect to MongoDB:', err));
+mongoose.connect(process.env.MONGODB_URI, {
+  maxPoolSize: 10,
+  socketTimeoutMS: 45000,
+  serverSelectionTimeoutMS: 5000
+});
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
