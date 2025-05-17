@@ -21,7 +21,7 @@ export default {
   server: {
     proxy: {
       '/api': {
-        target: env.VITE_API_BASE_URL || 'http://localhost:5050',
+        target: 'https://khrdt-site.onrender.com' || 'http://localhost:5050',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
         secure: false
