@@ -1,10 +1,12 @@
 services:
-  - type: web
+  - ype: web
     name: khrdt-backend
     env: node
-    buildCommand: cd backend && npm ci --omit=dev  
-    startCommand: cd backend && npm start
-    nodeVersion: 20.0.0 
+    nodeVersion: 20.0.0  # Use LTS version
+    buildCommand: |
+      cd backend && 
+      npm install --omit=dev --prefer-offline --no-audit
+    startCommand: cd backend && node server.js
     envVars:
       - key: MONGODB_URI
         fromDatabase:
