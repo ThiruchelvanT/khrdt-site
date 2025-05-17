@@ -246,9 +246,10 @@ const DiscoveriesPage = ({ language }) => {
               <th className="py-3 px-4 text-left">{columnHeaders[language].village}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].findings}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].description}</th>
+              <th className="py-3 px-4 text-left">{columnHeaders[language].blogspot}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].location}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].youtube}</th>
-              <th className="py-3 px-4 text-left">{columnHeaders[language].blogspot}</th>
+
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
@@ -259,6 +260,18 @@ const DiscoveriesPage = ({ language }) => {
                   <td className="py-3 px-4">{discovery.village}</td>
                   <td className="py-3 px-4 font-medium">{discovery.title}</td>
                   <td className="py-3 px-4">{discovery.description}</td>
+                  <td className="py-3 px-4">
+                    {discovery.blogLink ? (
+                      <a 
+                        href={discovery.blogLink} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-blue-600 hover:underline"
+                      >
+                        {language === 'en' ? 'View more' : 'மேலும் காண்க'}
+                      </a>
+                    ) : 'N/A'}
+                  </td>
                   <td className="py-3 px-4">
                     {renderLocationCell(discovery)}
                   </td>
@@ -274,18 +287,7 @@ const DiscoveriesPage = ({ language }) => {
                       </a>
                     ) : 'N/A'}
                   </td>
-                  <td className="py-3 px-4">
-                    {discovery.blogLink ? (
-                      <a 
-                        href={discovery.blogLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer" 
-                        className="text-blue-600 hover:underline"
-                      >
-                        {language === 'en' ? 'View more' : 'மேலும் காண்க'}
-                      </a>
-                    ) : 'N/A'}
-                  </td>
+                  
                 </tr>
               ))
             ) : (
