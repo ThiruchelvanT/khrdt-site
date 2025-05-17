@@ -16,7 +16,7 @@
     "mongoose": "^8.15.0",
     "papaparse": "^5.5.2",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3"
+    "bcryptjs": "^2.4.3" 
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
@@ -33,6 +33,6 @@
     "preinstall": "npm cache verify"
   },
   "engines": {
-  "node": ">=18.0.0"
+  "node": "20.x"
 }
 }

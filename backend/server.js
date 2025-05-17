@@ -135,7 +135,7 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-// News Endpoints
+// News Endpoints with parameter validation
 app.get('/api/news', async (req, res) => {
   try {
     const newsItems = await News.find().sort({ createdAt: -1 }).lean();
@@ -154,6 +154,28 @@ app.get('/api/news', async (req, res) => {
     res.status(500).json({ 
       status: 'error',
       error: 'Failed to fetch news',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+app.get('/api/news/:id([a-f0-9]{24})', async (req, res) => {
+  try {
+    const newsItem = await News.findById(req.params.id);
+    if (!newsItem) {
+      return res.status(404).json({ error: 'News item not found' });
+    }
+    res.json({
+      status: 'success',
+      data: {
+        ...newsItem.toObject(),
+        id: newsItem._id.toString()
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching news item:', error);
+    res.status(500).json({ 
+      error: 'Server error',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -180,6 +202,55 @@ app.post('/api/news', authenticateToken, async (req, res) => {
     res.status(400).json({
       status: 'error',
       error: 'Invalid news data',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+app.put('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
+  try {
+    const updatedNews = await News.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+    
+    if (!updatedNews) {
+      return res.status(404).json({ error: 'News item not found' });
+    }
+    
+    res.json({
+      status: 'success',
+      data: {
+        ...updatedNews.toObject(),
+        id: updatedNews._id.toString()
+      }
+    });
+  } catch (error) {
+    console.error('News update error:', error);
+    res.status(400).json({
+      status: 'error',
+      error: 'Invalid update data',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+app.delete('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
+  try {
+    const deletedNews = await News.findByIdAndDelete(req.params.id);
+    if (!deletedNews) {
+      return res.status(404).json({ error: 'News item not found' });
+    }
+    res.json({
+      status: 'success',
+      message: 'News item deleted successfully'
+    });
+  } catch (error) {
+    console.error('News deletion error:', error);
+    res.status(500).json({
+      status: 'error',
+      error: 'Failed to delete news',
       details: process.env.NODE_ENV === 'development' ? error.message : undefined
     });
   }
@@ -222,6 +293,7 @@ const server = app.listen(PORT, () => {
   console.log(`- GET  /api/departments`);
   console.log(`- POST /api/login`);
   console.log(`- GET  /api/news`);
+  console.log(`- GET  /api/news/:id`);
   console.log(`- POST /api/news (protected)`);
   console.log(`- PUT  /api/news/:id (protected)`);
   console.log(`- DELETE /api/news/:id (protected)`);

@@ -1,8 +1,4 @@
 #!/bin/bash
-if [ ! -d "node_modules" ]; then
-  echo "Installing missing dependencies..."
-  npm install --omit=dev
-fi
-
+rm -rf node_modules/.cache
 # Start the server
 node server.js
