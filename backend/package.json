@@ -1,5 +1,5 @@
 {
-  "name": "test_backend",
+  "name": "khrdt-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -28,5 +28,8 @@
     "start": "./start.sh",
     "dev": "nodemon --delay 2500ms --watch ./ server.js",
     "test": "jest"
-  }
+  },
+  "engines": {
+  "node": ">=18.0.0"
+}
 }
