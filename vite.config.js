@@ -18,5 +18,15 @@ export default {
     },
     sourcemap: false
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5050',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        secure: false
+      }
+    }
+  },
 };
 
