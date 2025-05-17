@@ -246,9 +246,9 @@ const DiscoveriesPage = ({ language }) => {
               <th className="py-3 px-4 text-left">{columnHeaders[language].village}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].findings}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].description}</th>
+              <th className="py-3 px-4 text-left">{columnHeaders[language].location}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].youtube}</th>
               <th className="py-3 px-4 text-left">{columnHeaders[language].blogspot}</th>
-              <th className="py-3 px-4 text-left">{columnHeaders[language].location}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
