@@ -1,10 +1,7 @@
-// 
-
-
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const NEWS_API_URL = 'http://localhost:5050/api/news'; // Replace with your actual API endpoint
+const NEWS_API_URL = 'http://localhost:5050/api/news';
 
 export default function NewsPage({ language }) {
   const [news, setNews] = useState([]);
@@ -21,16 +18,18 @@ export default function NewsPage({ language }) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        setNews(data.newsItems || []); // Assuming your backend returns an object with a 'newsItems' array
+        console.log('News data received:', data);
+        setNews(data.newsItems || []); // Access newsItems from the response
       } catch (e) {
         setError(e.message);
+        console.error('Error fetching news:', e); // Log the error
       } finally {
         setLoading(false);
       }
     };
 
     fetchNews();
-  }, [language]); // Re-fetch if the language changes (in case your backend supports language filtering)
+  }, [language]);
 
   if (loading) {
     return (
@@ -71,33 +70,30 @@ export default function NewsPage({ language }) {
       <h1 className="text-3xl font-bold text-center mb-10">
         {language === 'en' ? 'Latest News' : 'சமீபத்திய செய்திகள்'}
       </h1>
-
-      {/* Render the news cards from fetched data */}
       {news.map((newsItem, index) => (
         <motion.div
           key={index}
-          className={`flex flex-col md:flex-row ${index % 2 === 1 ? 'md:flex-row-reverse' : ''} items-center bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden`}
+          className={`flex flex-col md:flex-row ${
+            index % 2 === 1 ? 'md:flex-row-reverse' : ''
+          } items-center bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden`}
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: index * 0.2 }}
         >
-          {/* Image */}
           <div className="md:w-1/2 w-full h-64 md:h-auto">
             <img
-              src={newsItem.image} // Adjust based on your backend data structure
-              alt={newsItem[language]?.title || newsItem.title || 'News Image'} // Fallback for title
+              src={newsItem.image}
+              alt={newsItem[language]?.title || 'News Image'}
               className="w-full h-full object-cover"
             />
           </div>
-
-          {/* Text */}
           <div className="p-6 md:w-1/2 w-full">
             <h2 className="text-xl font-semibold mb-2">
-              {newsItem[language]?.title || newsItem.title} {/* Prioritize language-specific title */}
+              {newsItem[language]?.title || newsItem.title}
             </h2>
             <p className="text-gray-700 dark:text-gray-300">
-              {newsItem[language]?.description || newsItem.description} {/* Prioritize language-specific description */}
+              {newsItem[language]?.description || newsItem.description}
             </p>
           </div>
         </motion.div>

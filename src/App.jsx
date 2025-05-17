@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link,useNavigate } from 'react-router-dom';
 import Papa from 'papaparse';
 import { motion } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
@@ -11,6 +11,7 @@ import DistrictPage from './DistrictPage';
 import DiscoveriesPage from './DiscoveriesPage';
 import NewsPage from './NewsPage'; // Import the NewsPage component
 import { departmentsData } from './DepartmentsData';
+import NewsAdmin from './NewsAdmin';
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSw5nmsMCASycB4LXk0DoAZ_VoGDNcDvujSTgu0mfyxVtg1XGuILjZFuP4ihXOblHynK2_uwJu3xIow/pub?gid=0&single=true&output=csv';
 
@@ -36,9 +37,12 @@ export default function App() {
     language: 'en',
     departments: {},
     loading: true,
-    error: null
+    error: null,
+    isLoggedIn: localStorage.getItem('token') ? true : false, // Check for token on load
+    user: localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null,
   });
-  const { darkMode, language, menuOpen, youtubeLinks, departments, loading, error } = state;
+  const { darkMode, language, menuOpen, youtubeLinks, departments, loading, error, isLoggedIn, user } = state;
+  const navigate = useNavigate();
 
   const toggleLang = () => setState(prev => ({
     ...prev,
@@ -48,6 +52,20 @@ export default function App() {
   const toggleDarkMode = () => {
     document.documentElement.classList.toggle("dark", !state.darkMode);
     setState(prev => ({ ...prev, darkMode: !prev.darkMode }));
+  };
+
+  const handleLoginSuccess = (token, userData) => {
+    localStorage.setItem('token', token);
+    localStorage.setItem('user', JSON.stringify(userData));
+    setState(prev => ({ ...prev, isLoggedIn: true, user: userData }));
+    navigate('/admin/news'); // Redirect to the admin news page after login
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setState(prev => ({ ...prev, isLoggedIn: false, user: null }));
+    navigate('/'); // Redirect to the home page after logout
   };
 
   const texts = {
@@ -150,11 +168,7 @@ export default function App() {
       </div>
     );
   }
-  const handleLoginSuccess = (token, user) => {
-    console.log('Login successful!', token, user);
-    // Here you would typically update your app's state,
-    // set authentication tokens, and potentially redirect the user.
-  };
+ 
 
 
 
