@@ -15,8 +15,28 @@ const PORT = process.env.PORT || 5050
 
 const JWT_SECRET = process.env.JWT_SECRET || 'Sibi1970';
 
+
+
+
+const allowedOrigins = [
+  'http://localhost:5176', // Local development
+  'https://www.khrdt.in/', // Production
+  process.env.FRONTEND_URL // From environment variables
+].filter(Boolean); // Remove any undefined values
+
+
 const corsOptions = {
-  origin: 'http://localhost:5176',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin) || 
+        allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
