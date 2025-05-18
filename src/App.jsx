@@ -272,9 +272,9 @@ export default function App() {
                       <div className="text-lg font-medium text-center">
                         {departmentsData[key][language].title}
                       </div>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
+                      {/* <p className="text-xs text-gray-600 dark:text-gray-400 text-center">
           {departmentsData[key][language].summary || (language === 'en' ? "Brief description coming soon." : "சுருக்கமான விளக்கம் விரைவில்.")}
-        </p>
+        </p> */}
                     </motion.div>
                   </Link>
                 ))}
