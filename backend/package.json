@@ -32,7 +32,8 @@
     "start": "./start.sh",
     "dev": "nodemon --delay 2500ms --watch ./ server.js",
     "test": "jest",
-    "preinstall": "npm uninstall path-to-regexp && npm install path-to-regexp@6.2.1 --force"
+    "preinstall": "exit 0",  
+    "render-build": "npm install --production --legacy-peer-deps --no-audit && npm install path-to-regexp@6.2.1 --no-save"
   },
   "engines": {
   "node": "20.x" 
