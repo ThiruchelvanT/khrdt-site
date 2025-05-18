@@ -4,6 +4,8 @@ export const departmentsData = {
     "Hero stones": {
   en: {
     title: "Hero stones",
+    summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
+
     cards: [
       {
         title: "Origins of Hero Stones",
@@ -34,6 +36,7 @@ export const departmentsData = {
   },
   ta: {
     title: "நடுகற்கள்",
+    summary: "தமிழர்கள் வெட்சிப்போர், கரந்தைப்போர், வஞ்சிப்போர், உழிஞைப் போர், நொச்சிப் போர், தும்பைப் போர், வாகைப் போர் என்று போரைத் தமிழர் ஏழு வகையாகப் பிரித்திருக்கிறார்கள். சங்க காலத்தில் அரசர்கள் போர் செய்வதைத் தங்கள் கடமைகளில் முக்கிய மானதாகக் கருதினார்கள். ஏழு வகையான போர்களிலே எந்தப் போரிலானாலும் ஒரு வீரன் போர் செய்து உயிர் விட்டால் அந்த வீரனுக்கு நடுகல் நட்டு அவன் வீரத்தைப் பாராட்டினார்கள்.கிருஷ்ணகிரி மாவட்டம் எல்லை மாவட்டம் ஆதலால் போர்கள் அதிகம் உண்டு அதனால் வீரர்களும் அதிகம் உண்டு நடுகற்களும் அதிகம். அதுவும் தமிழகத்திலேயே அதிக நடுகற்களை கொண்ட மாவட்டம் நமது. .ஆண்டுதோறும் வீரக்கல்லுக்கு அவ்வீரனுடைய உறவினர் பூசை செய்தார்கள். இப்போது பொங்கல் அன்று எல்லா கிராமங்களிலும் நடுகல் பூசையும் படையலும் உண்டு. எப்போதும் இங்கு வீரத்திற்கு மதிப்பு அதிகம். ",
     cards: [
       {
         title: "நடுகற்களின் தோற்றம்",
@@ -67,6 +70,7 @@ export const departmentsData = {
     "Rock paintings" :{
     en: {
       title: "Rock paintings",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -97,6 +101,7 @@ export const departmentsData = {
     },
     ta: {
       title: "பாறை ஓவியங்கள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "பாறை ஓவியங்கள்",
@@ -130,6 +135,7 @@ export const departmentsData = {
     "Inscriptions" :{
     en: {
       title: "Inscriptions",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -160,6 +166,7 @@ export const departmentsData = {
     },
     ta: {
       title: "கல்வெட்டுகள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -193,6 +200,7 @@ export const departmentsData = {
     "Forts" :{
     en: {
       title: "Forts",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -223,6 +231,7 @@ export const departmentsData = {
     },
     ta: {
       title: "கோட்டைகள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -256,6 +265,7 @@ export const departmentsData = {
     "Cairn Circles" :{
     en: {
       title: "Cairn Circles",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -286,6 +296,7 @@ export const departmentsData = {
     },
     ta: {
       title: "கல்வட்டங்கள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -319,6 +330,7 @@ export const departmentsData = {
     "Dolmens" :{
     en: {
       title: "Dolmens",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -349,6 +361,7 @@ export const departmentsData = {
     },
     ta: {
       title: "கற்திட்டைகள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -382,6 +395,7 @@ export const departmentsData = {
     "Menhir" :{
     en: {
       title: "Menhir",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -412,6 +426,7 @@ export const departmentsData = {
     },
     ta: {
       title: "குத்துக்கல்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -445,6 +460,7 @@ export const departmentsData = {
     "Labyrinths" :{
     en: {
       title: "Labyrinths",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -475,6 +491,7 @@ export const departmentsData = {
     },
     ta: {
       title: "புதிர்நிலை",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -508,6 +525,7 @@ export const departmentsData = {
     "Temples" :{
     en: {
       title: "Temples",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -538,6 +556,7 @@ export const departmentsData = {
     },
     ta: {
       title: "கோயில்கள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
@@ -571,6 +590,7 @@ export const departmentsData = {
     "Statues" :{
     en: {
       title: "Statues",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "Origins of Hero Stones",
@@ -601,6 +621,7 @@ export const departmentsData = {
     },
     ta: {
       title: "சிலைகள்",
+      summary: "Discover the ancient hero stones, memorials to warriors and their valiant deeds, prevalent in the Krishnagiri region.",
       cards: [
         {
           title: "நடுகற்களின் தோற்றம்",
