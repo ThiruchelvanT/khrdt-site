@@ -14,10 +14,12 @@ const PORT = process.env.PORT || 5050;
 const JWT_SECRET = process.env.JWT_SECRET || 'Sibi1970';
 
 // Enhanced CORS Configuration
+
 const allowedOrigins = [
-  'http://localhost:5176', // Dev
-  'https://www.khrdt.in', // Production
-  'https://khrdt.in' // Alternate domain
+  'http://localhost:5176',
+  'https://www.khrdt.in',
+  'https://khrdt.in',
+  'https://khrdt-site.onrender.com' // Add your Render frontend URL if applicable
 ];
 
 const corsOptions = {
@@ -313,7 +315,7 @@ const initializeDB = async () => {
 mongoose.connection.once('open', initializeDB);
 
 // Server Start
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT,'0.0.0.0', () => {
   console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
   console.log(`Listening on port ${PORT}`);
   console.log('Available endpoints:');
