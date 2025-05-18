@@ -195,6 +195,29 @@ app.post('/api/login', async (req, res) => {
 //   }
 // });
 
+app.get('/api/news', async (req, res) => {
+  try {
+    const newsItems = await News.find().sort({ createdAt: -1 }).lean();
+    res.json({
+      status: 'success',
+      count: newsItems.length,
+      data: newsItems.map(item => ({
+        ...item,
+        id: item._id.toString()
+      })),
+      timestamp: new Date()
+    });
+  } catch (error) {
+    console.error('News fetch error:', error);
+    res.status(500).json({ 
+      status: 'error',
+      error: 'Failed to fetch news',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+});
+
+
 // News by ID endpoint
 app.get('/api/news/:id([0-9a-fA-F]{24})', async (req, res) => {
   try {
