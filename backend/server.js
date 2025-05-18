@@ -22,19 +22,26 @@ const allowedOrigins = [
   'https://khrdt-site.onrender.com' // Add your Render frontend URL if applicable
 ];
 
+// const corsOptions = {
+//   origin: (origin, callback) => {
+//     if (!origin || allowedOrigins.includes(origin)) {
+//       callback(null, true);
+//     } else {
+//       console.warn(`CORS blocked for origin: ${origin}`);
+//       callback(new Error('Not allowed by CORS'));
+//     }
+//   },
+//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+//   credentials: true,
+//   optionsSuccessStatus: 204
+// };
+
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`CORS blocked for origin: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: ['https://www.khrdt.in', 'https://khrdt.in'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  credentials: true,
-  optionsSuccessStatus: 204
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
 };
 
 // Middleware
