@@ -184,7 +184,7 @@ app.post('/api/login', async (req, res) => {
 // });
 
 // News by ID endpoint
-app.get('/api/news/:id(\\w{24})', async (req, res) => {
+app.get('/api/news/:id([0-9a-fA-F]{24})', async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ error: 'Invalid ID format' });
