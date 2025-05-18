@@ -19,7 +19,7 @@ export default function NewsPage({ language }) {
         }
         const data = await response.json();
         console.log('News data received:', data);
-        setNews(data.newsItems || []); // Access newsItems from the response
+        setNews(data.data || []); // Change newsItems to data // Access newsItems from the response
       } catch (e) {
         setError(e.message);
         console.error('Error fetching news:', e); // Log the error
