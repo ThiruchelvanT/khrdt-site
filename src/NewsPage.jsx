@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
-const NEWS_API_URL =  import.meta.env.VITE_API_BASE_URL || 'http://localhost:5050/api/news';;
+const NEWS_API_URL =  'https://khrdt-site.onrender.com'|| 'http://localhost:5050/api/news';;
 
 export default function NewsPage({ language }) {
   const [news, setNews] = useState([]);
