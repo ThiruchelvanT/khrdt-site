@@ -6,9 +6,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import News from './models/News.js';
-// import { pathToRegexp } from 'path-to-regexp';
-// Force using the correct version
-// console.log('path-to-regexp version:', pathToRegexp.toString());
+
 
 dotenv.config();
 
