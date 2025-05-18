@@ -16,7 +16,8 @@
     "mongoose": "^8.15.0",
     "papaparse": "^5.5.2",
     "jsonwebtoken": "^9.0.2",
-    "bcryptjs": "^2.4.3" 
+    "bcryptjs": "^2.4.3",
+    "path-to-regexp": "6.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^10.4.21",
@@ -30,9 +31,10 @@
     "start": "./start.sh",
     "dev": "nodemon --delay 2500ms --watch ./ server.js",
     "test": "jest",
-    "preinstall": "npm cache verify"
+    "preinstall": "npm uninstall path-to-regexp && npm install path-to-regexp@6.2.1"
   },
   "engines": {
   "node": "20.x"
 }
 }
+ 

@@ -136,35 +136,63 @@ app.post('/api/login', async (req, res) => {
 });
 
 // News Endpoints with parameter validation
-app.get('/api/news', async (req, res) => {
-  try {
-    const newsItems = await News.find().sort({ createdAt: -1 }).lean();
-    const response = {
-      status: 'success',
-      count: newsItems.length,
-      data: newsItems.map(item => ({
-        ...item,
-        id: item._id.toString()
-      })),
-      timestamp: new Date()
-    };
-    res.json(response);
-  } catch (error) {
-    console.error('News fetch error:', error);
-    res.status(500).json({ 
-      status: 'error',
-      error: 'Failed to fetch news',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
-  }
-});
+// app.get('/api/news', async (req, res) => {
+//   try {
+//     const newsItems = await News.find().sort({ createdAt: -1 }).lean();
+//     const response = {
+//       status: 'success',
+//       count: newsItems.length,
+//       data: newsItems.map(item => ({
+//         ...item,
+//         id: item._id.toString()
+//       })),
+//       timestamp: new Date()
+//     };
+//     res.json(response);
+//   } catch (error) {
+//     console.error('News fetch error:', error);
+//     res.status(500).json({ 
+//       status: 'error',
+//       error: 'Failed to fetch news',
+//       details: process.env.NODE_ENV === 'development' ? error.message : undefined
+//     });
+//   }
+// });
 
-app.get('/api/news/:id([a-f0-9]{24})', async (req, res) => {
+// app.get('/api/news/:id([a-f0-9]{24})', async (req, res) => {
+//   try {
+//     const newsItem = await News.findById(req.params.id);
+//     if (!newsItem) {
+//       return res.status(404).json({ error: 'News item not found' });
+//     }
+//     res.json({
+//       status: 'success',
+//       data: {
+//         ...newsItem.toObject(),
+//         id: newsItem._id.toString()
+//       }
+//     });
+//   } catch (error) {
+//     console.error('Error fetching news item:', error);
+//     res.status(500).json({ 
+//       error: 'Server error',
+//       details: process.env.NODE_ENV === 'development' ? error.message : undefined
+//     });
+//   }
+// });
+
+// News by ID endpoint
+app.get('/api/news/:id(\\w{24})', async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid ID format' });
+    }
+
     const newsItem = await News.findById(req.params.id);
     if (!newsItem) {
       return res.status(404).json({ error: 'News item not found' });
     }
+
     res.json({
       status: 'success',
       data: {
