@@ -35,9 +35,6 @@
 },
   "engines": {
   "node": "20.x" 
-},
-"resolutions": {
-  "path-to-regexp": "6.2.1"
 }
 }
 
