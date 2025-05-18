@@ -171,6 +171,9 @@ export default function DepartmentPage({ language }) {
       <h1 className="text-3xl font-bold text-center mb-10">
         {department[language].title}
       </h1>
+      <p className="text-gray-700 dark:text-gray-300 text-center mb-8">
+                {department[language].summary}
+            </p>
 
       {/* Render the cards */}
       {department[language].cards.map((card, index) => (
