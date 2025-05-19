@@ -293,6 +293,18 @@ description: "Tamil Nadu's largest rock carving & rock painting",
     link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_14.html',
   }
 },
+'jagadab': {
+  en: {
+    title: 'Jagadab',
+    description: 'inscription',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_18.html',
+  },
+  ta: {
+    title: 'ஜெகதாப்',
+    description: 'பௌத்தப்பள்ளி கல்வெட்டு',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_18.html',
+  }
+},
   // Add more places here
 };
 
