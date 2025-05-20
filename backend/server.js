@@ -57,7 +57,7 @@ const upload = multer({
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:5176',
+  'http://localhost:5177',
   'https://www.khrdt.in',
   'https://khrdt.in',
   'https://khrdt-site.onrender.com'
