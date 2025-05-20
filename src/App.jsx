@@ -44,6 +44,24 @@ export default function App() {
   const { darkMode, language, menuOpen, youtubeLinks, departments, loading, error, isLoggedIn, user } = state;
   const navigate = useNavigate();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setState(prev => ({
+          ...prev,
+          isLoggedIn: true,
+          user: JSON.parse(userData)
+        }));
+      } catch (e) {
+        console.error('Failed to parse user data:', e);
+        handleLogout();
+      }
+    }
+  }, []);
+
   const toggleLang = () => setState(prev => ({
     ...prev,
     language: prev.language === 'en' ? 'ta' : 'en'
@@ -175,7 +193,7 @@ export default function App() {
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className="min-h-screen bg-white dark:bg-gray-900 text-black dark:text-white font-sans">
-        <header className="flex justify-between items-center p-6 shadow-md">
+      <header className="flex justify-between items-center p-6 shadow-md">
           <div className="flex items-center space-x-3">
             <img src="/logo.png" alt="Logo" className="h-10 w-10" />
             <span className="text-xl font-bold">{texts[language].teamName}</span>
@@ -200,36 +218,66 @@ export default function App() {
           </div>
 
           <div className="flex md:hidden items-center space-x-4 relative">
-            <button className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700" onClick={() => setMenuOpen(!menuOpen)}>
+            <button 
+              className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none"
+              onClick={() => setState(prev => ({ ...prev, menuOpen: !prev.menuOpen }))}
+              aria-label="Toggle menu"
+            >
               {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+            
+            {/* Mobile Menu */}
             {menuOpen && (
-              <div className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50">
+              <motion.div 
+                className="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-gray-800 rounded-xl shadow-lg border dark:border-gray-700 z-50"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+              >
                 <div className="flex flex-col p-4 space-y-2">
-                  <Link to="/" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  <Link 
+                    to="/" 
+                    className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                    onClick={() => setState(prev => ({ ...prev, menuOpen: false }))}
+                  >
                     🏠 {texts[language].home}
                   </Link>
-                  <Link to="/news" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  <Link 
+                    to="/news" 
+                    className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                    onClick={() => setState(prev => ({ ...prev, menuOpen: false }))}
+                  >
                     📰 {texts[language].news}
                   </Link>
-                  <Link to="/discoveries" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  <Link 
+                    to="/discoveries" 
+                    className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                    onClick={() => setState(prev => ({ ...prev, menuOpen: false }))}
+                  >
                     🔍 {texts[language].discoveries}
                   </Link>
-                  <Link to="/contact" className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  <Link 
+                    to="/contact" 
+                    className="hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                    onClick={() => setState(prev => ({ ...prev, menuOpen: false }))}
+                  >
                     📞 {texts[language].contact}
                   </Link>
-                  <button onClick={toggleLang} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
+                  <button 
+                    onClick={toggleLang} 
+                    className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                  >
                     🌐 {language === 'en' ? 'English' : 'தமிழ்'}
                   </button>
-                  <button onClick={toggleDarkMode} className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded">
-                    {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+                  <button 
+                    onClick={toggleDarkMode} 
+                    className="text-left hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-2 rounded"
+                  >
+                    {darkMode ? texts[language].lightMode : texts[language].darkMode}
                   </button>
-                  <hr className="my-1 border-gray-300 dark:border-gray-600" />
-                  <Link to="/login">
-                    <button className="text-left text-blue-600 hover:underline px-3 py-2">{texts[language].login}</button>
-                  </Link>
                 </div>
-              </div>
+              </motion.div>
             )}
           </div>
         </header>
@@ -309,7 +357,17 @@ export default function App() {
           <Route path="/login" element={<Login onLogin={handleLoginSuccess} />} />
           <Route path="/krishnagiri/:placeName" element={<DistrictPage language={language} />} />
           <Route path="/department/:name" element={<DepartmentPage key={language} language={language} departments={departments} />} />
-          <Route path="/news" element={<NewsPage language={language} />} />
+          {/* <Route path="/news" element={<NewsPage language={language} />} /> */}
+          <Route 
+          path="/news" 
+          element={
+            <NewsPage 
+              language={language} 
+              isAdmin={isLoggedIn} 
+              onUnauthorized={handleLogout}
+            /> 
+          } 
+        />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/discoveries" element={<DiscoveriesPage language={language} />} />
         </Routes>

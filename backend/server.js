@@ -6,7 +6,11 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import dotenv from 'dotenv';
 import News from './models/News.js';
-
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 dotenv.config();
 
@@ -14,84 +18,128 @@ const app = express();
 const PORT = process.env.PORT || 5050;
 const JWT_SECRET = process.env.JWT_SECRET || 'Sibi1970';
 
-// Enhanced CORS Configuration
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
+// Create images directory if not exists
+const imagesDir = path.join(__dirname, 'images');
+if (!fs.existsSync(imagesDir)) {
+  try {
+    fs.mkdirSync(imagesDir, { recursive: true });
+    console.log("Images directory created at:", imagesDir);
+  } catch (error) {
+    console.error("Failed to create images directory:", error);
+    process.exit(1);
+  }
+}
+
+// Multer setup
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null, imagesDir),
+  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname))
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (req, file, cb) => {
+    const allowedTypes = /jpeg|jpg|png|gif/;
+    const isValid = allowedTypes.test(file.mimetype) && allowedTypes.test(path.extname(file.originalname).toLowerCase());
+    if (isValid) return cb(null, true);
+    cb(new Error('Only image files are allowed.'));
+  },
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
+
+
+
+// CORS configuration
 const allowedOrigins = [
   'http://localhost:5176',
   'https://www.khrdt.in',
   'https://khrdt.in',
-  'https://khrdt-site.onrender.com' // Add your Render frontend URL if applicable
+  'https://khrdt-site.onrender.com'
 ];
 
-// const corsOptions = {
-//   origin: (origin, callback) => {
-//     if (!origin || allowedOrigins.includes(origin)) {
-//       callback(null, true);
-//     } else {
-//       console.warn(`CORS blocked for origin: ${origin}`);
-//       callback(new Error('Not allowed by CORS'));
-//     }
-//   },
-//   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-//   credentials: true,
-//   optionsSuccessStatus: 204
-// };
-
-const corsOptions = {
-  origin: [
-    'https://www.khrdt.in',
-    'https://khrdt.in',
-    'https://khrdt-site.onrender.com'  // ✅ Add this
-  ],
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 
-// Middleware
-app.use(cors(corsOptions));
+app.options('*', cors());
 app.use(express.json());
-app.options('*', cors(corsOptions)); // Global OPTIONS handler
+app.use('/images', express.static(imagesDir), (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
-// Database Connection
+// MongoDB connection
 mongoose.connect(process.env.MONGODB_URI, {
   maxPoolSize: 10,
   socketTimeoutMS: 45000,
   serverSelectionTimeoutMS: 5000
 })
-.then(() => console.log('MongoDB connected successfully'))
-.catch(err => console.error('MongoDB connection error:', err));
+.then(() => console.log('✅ MongoDB connected'))
+.catch(err => {
+  console.error('❌ MongoDB connection error:', err);
+  process.exit(1);
+});
 
-app.use('/images', express.static('images'));  // Serve static files from 'images' directory
-
-
-// Authentication Middleware
+// Middleware: JWT Authentication
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader?.split(' ')[1];
+  
+  if (!token) {
+    console.log('No token provided');
+    return res.status(401).json({ error: 'Authorization token required' });
+  }
 
-  if (!token) return res.status(401).json({ error: 'Authorization token required' });
-
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      console.error('JWT verification error:', err);
-      return res.status(403).json({ error: 'Invalid or expired token' });
-    }
+  try {
+    const user = jwt.verify(token, JWT_SECRET);
     req.user = user;
+    console.log('Token verified for user:', user);
     next();
-  });
+  } catch (err) {
+    console.error('Token verification error:', err);
+    const code = err.name === 'TokenExpiredError' ? 'TOKEN_EXPIRED' : 'INVALID_TOKEN';
+    return res.status(403).json({ 
+      error: err.message, 
+      code,
+      details: {
+        receivedToken: token,
+        secretUsed: JWT_SECRET === 'Sibi1970' ? 'default-secret' : 'custom-secret'
+      }
+    });
+  }
 };
 
-// API Routes
-app.get('/api/health', (req, res) => {
-  res.json({ 
-    status: 'healthy',
-    timestamp: new Date(),
-    environment: process.env.NODE_ENV || 'development'
+app.use('/images', express.static(imagesDir), (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
+// Upload Endpoint
+app.post('/api/upload', authenticateToken, upload.single('image'), (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({ error: 'No file uploaded' });
+  }
+  res.json({
+    imageUrl: `/images/${req.file.filename}`,
+    message: 'Upload successful'
   });
 });
 
+// Sample departments route
 app.get('/api/departments', (req, res) => {
   res.json({
     status: "success",
@@ -99,38 +147,23 @@ app.get('/api/departments', (req, res) => {
       "Hero stones": {
         en: { title: "Test Hero Stones" },
         ta: { title: "சோதனை வீரக்கல்" }
-      },
-      "Rock paintings": {
-        en: { title: "Rock Paintings" },
-        ta: { title: "பாறை ஓவியங்கள்" }
       }
     }
   });
 });
 
+// Login endpoint
 app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    if (!email || !password) {
-      return res.status(400).json({ error: 'Email and password required' });
-    }
+    if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
     const user = await User.findOne({ email }).select('+password');
-    if (!user) {
+    if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ error: 'Invalid credentials' });
-    }
-
-    const token = jwt.sign(
-      { userId: user._id, email: user.email },
-      JWT_SECRET,
-      { expiresIn: '1h' }
-    );
+    const token = jwt.sign({ userId: user._id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
 
     res.json({
       status: 'success',
@@ -141,63 +174,13 @@ app.post('/api/login', async (req, res) => {
         email: user.email
       }
     });
-
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ 
-      status: 'error',
-      error: 'Authentication failed',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ error: 'Authentication failed' });
   }
 });
 
-// News Endpoints with parameter validation
-// app.get('/api/news', async (req, res) => {
-//   try {
-//     const newsItems = await News.find().sort({ createdAt: -1 }).lean();
-//     const response = {
-//       status: 'success',
-//       count: newsItems.length,
-//       data: newsItems.map(item => ({
-//         ...item,
-//         id: item._id.toString()
-//       })),
-//       timestamp: new Date()
-//     };
-//     res.json(response);
-//   } catch (error) {
-//     console.error('News fetch error:', error);
-//     res.status(500).json({ 
-//       status: 'error',
-//       error: 'Failed to fetch news',
-//       details: process.env.NODE_ENV === 'development' ? error.message : undefined
-//     });
-//   }
-// });
-
-// app.get('/api/news/:id([a-f0-9]{24})', async (req, res) => {
-//   try {
-//     const newsItem = await News.findById(req.params.id);
-//     if (!newsItem) {
-//       return res.status(404).json({ error: 'News item not found' });
-//     }
-//     res.json({
-//       status: 'success',
-//       data: {
-//         ...newsItem.toObject(),
-//         id: newsItem._id.toString()
-//       }
-//     });
-//   } catch (error) {
-//     console.error('Error fetching news item:', error);
-//     res.status(500).json({ 
-//       error: 'Server error',
-//       details: process.env.NODE_ENV === 'development' ? error.message : undefined
-//     });
-//   }
-// });
-
+// News Routes
 app.get('/api/news', async (req, res) => {
   try {
     const newsItems = await News.find().sort({ createdAt: -1 }).lean();
@@ -212,16 +195,10 @@ app.get('/api/news', async (req, res) => {
     });
   } catch (error) {
     console.error('News fetch error:', error);
-    res.status(500).json({ 
-      status: 'error',
-      error: 'Failed to fetch news',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ error: 'Failed to fetch news' });
   }
 });
 
-
-// News by ID endpoint
 app.get('/api/news/:id([0-9a-fA-F]{24})', async (req, res) => {
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
@@ -229,9 +206,7 @@ app.get('/api/news/:id([0-9a-fA-F]{24})', async (req, res) => {
     }
 
     const newsItem = await News.findById(req.params.id);
-    if (!newsItem) {
-      return res.status(404).json({ error: 'News item not found' });
-    }
+    if (!newsItem) return res.status(404).json({ error: 'News item not found' });
 
     res.json({
       status: 'success',
@@ -242,10 +217,7 @@ app.get('/api/news/:id([0-9a-fA-F]{24})', async (req, res) => {
     });
   } catch (error) {
     console.error('Error fetching news item:', error);
-    res.status(500).json({ 
-      error: 'Server error',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ error: 'Server error' });
   }
 });
 
@@ -255,9 +227,9 @@ app.post('/api/news', authenticateToken, async (req, res) => {
       ...req.body,
       createdBy: req.user.userId
     });
-    
+
     const savedNews = await newNews.save();
-    
+
     res.status(201).json({
       status: 'success',
       data: {
@@ -267,11 +239,7 @@ app.post('/api/news', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('News creation error:', error);
-    res.status(400).json({
-      status: 'error',
-      error: 'Invalid news data',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(400).json({ error: 'Invalid news data' });
   }
 });
 
@@ -282,11 +250,9 @@ app.put('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
       req.body,
       { new: true, runValidators: true }
     );
-    
-    if (!updatedNews) {
-      return res.status(404).json({ error: 'News item not found' });
-    }
-    
+
+    if (!updatedNews) return res.status(404).json({ error: 'News item not found' });
+
     res.json({
       status: 'success',
       data: {
@@ -296,83 +262,79 @@ app.put('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
     });
   } catch (error) {
     console.error('News update error:', error);
-    res.status(400).json({
-      status: 'error',
-      error: 'Invalid update data',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(400).json({ error: 'Invalid update data' });
   }
 });
 
 app.delete('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
   try {
     const deletedNews = await News.findByIdAndDelete(req.params.id);
-    if (!deletedNews) {
-      return res.status(404).json({ error: 'News item not found' });
-    }
-    res.json({
-      status: 'success',
-      message: 'News item deleted successfully'
-    });
+    if (!deletedNews) return res.status(404).json({ error: 'News item not found' });
+
+    res.json({ status: 'success', message: 'News item deleted successfully' });
   } catch (error) {
     console.error('News deletion error:', error);
-    res.status(500).json({
-      status: 'error',
-      error: 'Failed to delete news',
-      details: process.env.NODE_ENV === 'development' ? error.message : undefined
-    });
+    res.status(500).json({ error: 'Failed to delete news' });
   }
 });
 
-// Database Initialization
+// Seed database on first run
 const initializeDB = async () => {
   try {
     const count = await News.countDocuments();
-    console.log(`News collection contains ${count} documents`);
+    console.log(`News collection count: ${count}`);
 
     if (count === 0) {
+      const defaultImage = 'images/bg1.jpeg';
+      const imagePath = path.join(imagesDir, 'bg1.jpeg');
+
+      const imageExists = fs.existsSync(imagePath);
+      const enImage = imageExists ? defaultImage : '';
+      const taImage = imageExists ? defaultImage : '';
+
       await News.create({
         en: {
           title: 'Ancient Pottery Unearthed in Krishnagiri',
           description: 'Archaeologists have discovered significant pottery fragments...',
-          image: '/images/news1.jpeg'
+          image: enImage
         },
         ta: {
           title: 'கிருஷ்ணகிரியில் பழங்கால பானைகள் கண்டுபிடிப்பு',
           description: 'சங்க காலத்தைச் சேர்ந்த குறிப்பிடத்தக்க பானை ஓடுகளை...',
-          image: '/images/news1_ta.jpeg'
+          image: taImage
         }
       });
-      console.log('Initial test news item created');
+
+      console.log('✅ Initial news document inserted');
     }
   } catch (err) {
-    console.error('Database initialization error:', err);
+    console.error('DB init error:', err);
   }
 };
 
 mongoose.connection.once('open', initializeDB);
 
-// Server Start
-const server = app.listen(PORT,'0.0.0.0', () => {
-  console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode`);
-  console.log(`Listening on port ${PORT}`);
+// Start server
+const server = app.listen(PORT, '0.0.0.0', () => {
+  console.log(`✅ Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
   console.log('Available endpoints:');
-  console.log(`- GET  /api/health`);
-  console.log(`- GET  /api/departments`);
-  console.log(`- POST /api/login`);
-  console.log(`- GET  /api/news`);
-  console.log(`- GET  /api/news/:id`);
-  console.log(`- POST /api/news (protected)`);
-  console.log(`- PUT  /api/news/:id (protected)`);
-  console.log(`- DELETE /api/news/:id (protected)`);
+  console.log('- GET    /api/departments');
+  console.log('- POST   /api/login');
+  console.log('- GET    /api/news');
+  console.log('- GET    /api/news/:id');
+  console.log('- POST   /api/news       (protected)');
+  console.log('- PUT    /api/news/:id   (protected)');
+  console.log('- DELETE /api/news/:id   (protected)');
+  console.log('- POST   /api/upload     (protected)');
 });
 
-// Graceful Shutdown
+// Graceful shutdown
 process.on('SIGTERM', () => {
   console.log('SIGTERM received. Shutting down gracefully...');
   server.close(() => {
     mongoose.connection.close(false, () => {
-      console.log('Server and database connections closed');
+      console.log('✅ Server and DB connections closed');
       process.exit(0);
     });
   });
