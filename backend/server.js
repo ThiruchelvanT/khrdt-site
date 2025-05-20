@@ -298,15 +298,36 @@ app.put('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
   }
 });
 
-app.delete('/api/news/:id([a-f0-9]{24})', authenticateToken, async (req, res) => {
+app.delete('/api/news/:id', authenticateToken, async (req, res) => {
   try {
-    const deletedNews = await News.findByIdAndDelete(req.params.id);
-    if (!deletedNews) return res.status(404).json({ error: 'News item not found' });
+    // Validate ID format
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ 
+        error: 'Invalid ID format',
+        code: 'INVALID_ID'
+      });
+    }
 
-    res.json({ status: 'success', message: 'News item deleted successfully' });
+    const deletedNews = await News.findByIdAndDelete(req.params.id);
+    
+    if (!deletedNews) {
+      return res.status(404).json({ 
+        error: 'News item not found',
+        code: 'NOT_FOUND'
+      });
+    }
+
+    res.json({ 
+      status: 'success',
+      message: 'News item deleted successfully'
+    });
+    
   } catch (error) {
     console.error('News deletion error:', error);
-    res.status(500).json({ error: 'Failed to delete news' });
+    res.status(500).json({ 
+      error: 'Failed to delete news',
+      code: 'SERVER_ERROR'
+    });
   }
 });
 

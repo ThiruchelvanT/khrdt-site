@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useState, useEffect, useRef } from 'react';
-import { Edit, Trash2, Plus, X, Save, Upload, LogOut } from 'lucide-react'; // Added LogOut icon
+import { Edit, Trash2, Plus, X, Save, Upload, LogOut } from 'lucide-react';
 
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://khrdt-site.onrender.com' 
@@ -35,35 +35,40 @@ export default function NewsPage({ language, isAdmin = false, onUnauthorized }) 
 
   // Fetch news from backend
   useEffect(() => {
-    // In your NewsPage.jsx
-      const fetchNews = async () => {
-        try {
-          const response = await fetch(NEWS_API_URL, {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            credentials: 'include' // If using cookies
-          });
+    const fetchNews = async () => {
+      try {
+        const response = await fetch(NEWS_API_URL, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include'
+        });
 
-          if (!response.ok) {
-            if (response.status === 502) {
-              throw new Error('Server is temporarily unavailable. Please try again later.');
-            }
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok) {
+          if (response.status === 502) {
+            throw new Error('Server is temporarily unavailable. Please try again later.');
           }
-
-          const data = await response.json();
-          setNews(data.data || []);
-        } catch (e) {
-          setError(e.message);
-          console.error('Error fetching news:', e);
-        } finally {
-          setLoading(false);
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      };
+
+        const data = await response.json();
+        // Ensure each news item has an id field
+        const processedData = data.data.map(item => ({
+          ...item,
+          id: item._id ? item._id.toString() : item.id
+        }));
+        setNews(processedData || []);
+      } catch (e) {
+        setError(e.message);
+        console.error('Error fetching news:', e);
+      } finally {
+        setLoading(false);
+      }
+    };
 
     fetchNews();
   }, []);
+
 
   const handleInputChange = (e, lang, field) => {
     setNewNews(prev => ({
@@ -319,8 +324,17 @@ export default function NewsPage({ language, isAdmin = false, onUnauthorized }) 
     }
   };
 
-  // Delete news item
-  const handleDelete = async (id) => {
+   // Delete news item with proper error handling
+   const handleDelete = async (id) => {
+    // Validate ID before proceeding
+    if (!id || typeof id !== 'string') {
+      console.error('Invalid news ID:', id);
+      setError(language === 'en' 
+        ? 'Invalid news item ID' 
+        : 'செய்தி ஐடி தவறானது');
+      return;
+    }
+
     if (!window.confirm(language === 'en' 
       ? 'Are you sure you want to delete this news item?' 
       : 'இந்த செய்தியை நீக்க விரும்புகிறீர்களா?')) {
@@ -335,12 +349,26 @@ export default function NewsPage({ language, isAdmin = false, onUnauthorized }) 
         }
       });
 
-      if (!response.ok) throw new Error('Failed to delete news');
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (response.status === 404) {
+          throw new Error(language === 'en' 
+            ? 'News item not found' 
+            : 'செய்தி கிடைக்கவில்லை');
+        }
+        throw new Error(errorData.error || 
+          (language === 'en' 
+            ? 'Failed to delete news' 
+            : 'செய்தியை நீக்க முடியவில்லை'));
+      }
 
-      setNews(news.filter(item => item.id !== id));
+      // Update state
+      setNews(prevNews => prevNews.filter(item => item.id !== id));
+      
     } catch (error) {
+      console.error('Delete error:', error);
       setError(error.message);
-      console.error('Error deleting news:', error);
+      setTimeout(() => setError(''), 5000);
     }
   };
 
@@ -395,6 +423,7 @@ export default function NewsPage({ language, isAdmin = false, onUnauthorized }) 
       </div>
     );
   }
+ 
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-12">
