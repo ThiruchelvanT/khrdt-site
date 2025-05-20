@@ -12,7 +12,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-const apicache = require('apicache');
+import apicache from 'apicache';
 let cache = apicache.middleware;
 
 dotenv.config();
@@ -188,7 +188,7 @@ app.get('/api/news', async (req, res) => {
   try {
     // Add timeout handling
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error('Request timeout')), 5000);
+      setTimeout(() => reject(new Error('Request timeout')), 5000));
     
     const newsPromise = News.find().sort({ createdAt: -1 }).lean();
     
