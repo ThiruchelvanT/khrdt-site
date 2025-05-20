@@ -12,6 +12,9 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+const apicache = require('apicache');
+let cache = apicache.middleware;
+
 dotenv.config();
 
 const app = express();
@@ -180,10 +183,39 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+// Add better error handling in your /api/news route
+app.get('/api/news', async (req, res) => {
+  try {
+    // Add timeout handling
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Request timeout')), 5000);
+    
+    const newsPromise = News.find().sort({ createdAt: -1 }).lean();
+    
+    const newsItems = await Promise.race([newsPromise, timeoutPromise]);
+    
+    res.json({
+      status: 'success',
+      data: newsItems
+    });
+    
+  } catch (error) {
+    console.error('News fetch error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+    });
+  }
+});
+
 // News Routes
 app.get('/api/news', async (req, res) => {
   try {
-    const newsItems = await News.find().sort({ createdAt: -1 }).lean();
+    const newsItems = await News.find()
+      .sort({ createdAt: -1 })
+      .lean()
+      .select('-_id -__v -createdBy') // Exclude unnecessary fields
+      .limit(50); // Add reasonable limit
     res.json({
       status: 'success',
       count: newsItems.length,

@@ -35,19 +35,32 @@ export default function NewsPage({ language, isAdmin = false, onUnauthorized }) 
 
   // Fetch news from backend
   useEffect(() => {
-    const fetchNews = async () => {
-      try {
-        const response = await fetch(NEWS_API_URL);
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        const data = await response.json();
-        setNews(data.data || []);
-      } catch (e) {
-        setError(e.message);
-        console.error('Error fetching news:', e);
-      } finally {
-        setLoading(false);
-      }
-    };
+    // In your NewsPage.jsx
+      const fetchNews = async () => {
+        try {
+          const response = await fetch(NEWS_API_URL, {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include' // If using cookies
+          });
+
+          if (!response.ok) {
+            if (response.status === 502) {
+              throw new Error('Server is temporarily unavailable. Please try again later.');
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          setNews(data.data || []);
+        } catch (e) {
+          setError(e.message);
+          console.error('Error fetching news:', e);
+        } finally {
+          setLoading(false);
+        }
+      };
 
     fetchNews();
   }, []);
