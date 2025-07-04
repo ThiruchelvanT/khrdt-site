@@ -2,34 +2,37 @@ import { initialize, pageview, event } from 'react-ga4';
 
 const TRACKING_ID = "G-8T6XLR1WPL";
 
-// Initialize with more detailed configuration
 export const initGA = () => {
+  if (typeof window === 'undefined') return; // SSR safety
+  
+  console.log(`[GA] Initializing in ${process.env.NODE_ENV} mode`);
   initialize(TRACKING_ID, {
-    testMode: process.env.NODE_ENV === 'test', // Disable in test
+    testMode: process.env.NODE_ENV !== 'production',
     gaOptions: {
-      anonymizeIp: true, // GDPR compliance
-      cookieDomain: 'auto'
+      anonymizeIp: true,
+      cookieDomain: 'auto',
+      debug_mode: process.env.NODE_ENV !== 'production'
     }
   });
 };
 
-// Enhanced pageview tracking
 export const trackPageView = (path) => {
+  if (typeof window === 'undefined') return;
+  
+  console.log(`[GA] Tracking pageview: ${path}`);
   pageview(path, undefined, {
     page_title: document.title,
-    page_location: window.location.href
+    page_location: window.location.href,
+    page_path: path
   });
 };
 
-// Enhanced event tracking
 export const trackEvent = (category, action, label, value) => {
+  console.log(`[GA] Event: ${category} - ${action}`);
   event({
     category,
     action,
     label,
-    value
+    value: value || undefined
   });
 };
-
-// In your analytics.js
-console.log(`Initializing GA in ${process.env.NODE_ENV} mode`);

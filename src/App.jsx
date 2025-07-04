@@ -14,7 +14,6 @@ import { departmentsData } from './DepartmentsData';
 import NewsAdmin from './NewsAdmin';
 // Install via npm: npm install react-ga
 // import ReactGA from 'react-ga';
-import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { initGA, trackPageView } from './utils/analytics';
 
@@ -60,17 +59,20 @@ export default function App() {
   // useEffect(() => {
   //   trackPageView(location.pathname + location.search);
   // }, [location]);
-
   useEffect(() => {
+    // Initialize GA only in production
     if (process.env.NODE_ENV === 'production') {
       initGA();
-      trackPageView(window.location.pathname);
+      // Track initial pageview
+      trackPageView(window.location.pathname + window.location.search);
     }
   }, []);
-
+  
   useEffect(() => {
+    // Track subsequent route changes
     if (process.env.NODE_ENV === 'production') {
-      trackPageView(location.pathname + location.search);
+      const fullPath = location.pathname + location.search;
+      trackPageView(fullPath);
     }
   }, [location]);
 
