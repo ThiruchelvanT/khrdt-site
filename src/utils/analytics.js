@@ -30,3 +30,6 @@ export const trackEvent = (category, action, label, value) => {
     value
   });
 };
+
+// In your analytics.js
+console.log(`Initializing GA in ${process.env.NODE_ENV} mode`);
