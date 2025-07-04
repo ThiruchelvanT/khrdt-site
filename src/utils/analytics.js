@@ -1,38 +1,50 @@
-import { initialize, pageview, event } from 'react-ga4';
+import ReactGA from 'react-ga4';
 
 const TRACKING_ID = "G-8T6XLR1WPL";
 
 export const initGA = () => {
-  if (typeof window === 'undefined') return; // SSR safety
+  if (typeof window === 'undefined') return; // Skip during SSR
   
-  console.log(`[GA] Initializing in ${process.env.NODE_ENV} mode`);
-  initialize(TRACKING_ID, {
-    testMode: process.env.NODE_ENV !== 'production',
+  // Initialize GA4
+  ReactGA.initialize(TRACKING_ID, {
+    testMode: process.env.NODE_ENV !== 'production', // Enable test mode in development
     gaOptions: {
-      anonymizeIp: true,
-      cookieDomain: 'auto',
-      debug_mode: process.env.NODE_ENV !== 'production'
+      anonymizeIp: true, // GDPR compliance
+      cookieDomain: 'auto'
     }
   });
+
+  // Optional: Debug logging
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[GA] Initialized with ID:', TRACKING_ID);
+  }
 };
 
 export const trackPageView = (path) => {
   if (typeof window === 'undefined') return;
   
-  console.log(`[GA] Tracking pageview: ${path}`);
-  pageview(path, undefined, {
-    page_title: document.title,
-    page_location: window.location.href,
-    page_path: path
+  // Send pageview using GA4 measurement protocol
+  ReactGA.send({
+    hitType: 'pageview',
+    page: path,
+    title: document.title,
+    location: window.location.href
   });
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[GA] Pageview tracked:', path);
+  }
 };
 
-export const trackEvent = (category, action, label, value) => {
-  console.log(`[GA] Event: ${category} - ${action}`);
-  event({
+export const trackEvent = ({ category, action, label, value }) => {
+  ReactGA.event({
     category,
     action,
     label,
-    value: value || undefined
+    value
   });
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log('[GA] Event tracked:', { category, action, label, value });
+  }
 };

@@ -52,21 +52,16 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // useEffect(() => {
-  //   initGA();
-  // }, []);
-
-  // useEffect(() => {
-  //   trackPageView(location.pathname + location.search);
-  // }, [location]);
+ 
   useEffect(() => {
     // Initialize GA only in production
-    if (process.env.NODE_ENV === 'production') {
+    // if (process.env.NODE_ENV === 'production') {
       initGA();
       // Track initial pageview
       trackPageView(window.location.pathname + window.location.search);
-    }
+    // }
   }, []);
+
   
   useEffect(() => {
     // Track subsequent route changes
