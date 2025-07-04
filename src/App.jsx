@@ -12,6 +12,11 @@ import DiscoveriesPage from './DiscoveriesPage';
 import NewsPage from './NewsPage'; // Import the NewsPage component
 import { departmentsData } from './DepartmentsData';
 import NewsAdmin from './NewsAdmin';
+// Install via npm: npm install react-ga
+import ReactGA from 'react-ga';
+
+ReactGA.initialize('G-8T6XLR1WPL');
+ReactGA.pageview(window.location.pathname + window.location.search);
 
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSw5nmsMCASycB4LXk0DoAZ_VoGDNcDvujSTgu0mfyxVtg1XGuILjZFuP4ihXOblHynK2_uwJu3xIow/pub?gid=0&single=true&output=csv';
 
