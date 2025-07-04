@@ -53,12 +53,25 @@ export default function App() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // useEffect(() => {
+  //   initGA();
+  // }, []);
+
+  // useEffect(() => {
+  //   trackPageView(location.pathname + location.search);
+  // }, [location]);
+
   useEffect(() => {
-    initGA();
+    if (process.env.NODE_ENV === 'production') {
+      initGA();
+      trackPageView(window.location.pathname);
+    }
   }, []);
 
   useEffect(() => {
-    trackPageView(location.pathname + location.search);
+    if (process.env.NODE_ENV === 'production') {
+      trackPageView(location.pathname + location.search);
+    }
   }, [location]);
 
   useEffect(() => {

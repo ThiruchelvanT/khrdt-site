@@ -1,19 +1,32 @@
 import { initialize, pageview, event } from 'react-ga4';
 
-const TRACKING_ID = "G-8T6XLR1WPL"; // Replace with your Measurement ID
+const TRACKING_ID = "G-8T6XLR1WPL";
 
+// Initialize with more detailed configuration
 export const initGA = () => {
-  initialize(TRACKING_ID);
+  initialize(TRACKING_ID, {
+    testMode: process.env.NODE_ENV === 'test', // Disable in test
+    gaOptions: {
+      anonymizeIp: true, // GDPR compliance
+      cookieDomain: 'auto'
+    }
+  });
 };
 
+// Enhanced pageview tracking
 export const trackPageView = (path) => {
-  pageview(path);
+  pageview(path, undefined, {
+    page_title: document.title,
+    page_location: window.location.href
+  });
 };
 
-export const trackEvent = (category, action, label) => {
+// Enhanced event tracking
+export const trackEvent = (category, action, label, value) => {
   event({
-    category: category,
-    action: action,
-    label: label
+    category,
+    action,
+    label,
+    value
   });
 };
