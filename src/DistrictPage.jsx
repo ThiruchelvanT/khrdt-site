@@ -305,6 +305,18 @@ description: "Tamil Nadu's largest rock carving & rock painting",
     link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_18.html',
   }
 },
+'mallapadi': {
+  en: {
+    title: 'Rock Painting',
+    description: 'Rock Painting',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_58.html',
+  },
+  ta: {
+    title: 'மல்லப்பாடி',
+    description: 'பாறைஓவியம் , கோவில் கல்வெட்டுகள் ',
+    link: 'https://khrdthistoryofkrishnagiri.blogspot.com/2025/05/blog-post_58.html',
+  }
+},
   // Add more places here
 };
 
